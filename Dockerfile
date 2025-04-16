@@ -8,6 +8,7 @@ WORKDIR /app
 FROM base AS deps
 COPY package.json package-lock.json* ./
 RUN npm ci --legacy-peer-deps
+RUN npx prisma db push
 
 # Build the application
 FROM base AS builder
