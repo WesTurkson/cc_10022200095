@@ -1,6 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Suspense } from "react";
 
 export default function AuthRoute({ children, redirectTo }) {
   const { data: session } = useSession();
@@ -10,5 +11,5 @@ export default function AuthRoute({ children, redirectTo }) {
     router.push(redirectTo);
   }
 
-  return <>{children}</>;
+  return <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>;
 }
