@@ -80,7 +80,7 @@ export async function POST(request) {
     // Upsert the contact (create if not exists, update if exists)
     const contact = await prisma.contact.upsert({
       where: {
-        userId: user.id, // Unique identifier to find the contact
+        email: data.email, // Unique identifier to find the contact
       },
       update: { // Data to update if contact exists
         name: data.name,
