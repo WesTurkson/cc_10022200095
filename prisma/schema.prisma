@@ -52,7 +52,7 @@ model VerificationToken {
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String?   @unique
+  email         String   @unique
   emailVerified DateTime?
   image         String?
   password      String?   // Added for credentials authentication
@@ -70,7 +70,7 @@ model User {
 model Contact {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
-  email     String
+  email     String   @unique
   phone     String?
   company   String?
   address   String?
