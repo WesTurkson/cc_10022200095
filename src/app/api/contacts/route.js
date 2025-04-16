@@ -77,9 +77,20 @@ export async function POST(request) {
       );
     }
     
-    // Create the contact
-    const contact = await prisma.contact.create({
-      data: {
+    // Upsert the contact (create if not exists, update if exists)
+    const contact = await prisma.contact.upsert({
+      where: {
+        userId: user.id, // Unique identifier to find the contact
+      },
+      update: { // Data to update if contact exists
+        name: data.name,
+        email: data.email,
+        phone: data.phone || null,
+        company: data.company || null,
+        address: data.address || null,
+        notes: data.notes || null,
+      },
+      create: { // Data to create if contact does not exist
         name: data.name,
         email: data.email,
         phone: data.phone || null,
@@ -90,11 +101,18 @@ export async function POST(request) {
       },
     });
     
-    return NextResponse.json(contact, { status: 201 });
+    return NextResponse.json(contact, { status: 200 }); // Status 200 for upsert
   } catch (error) {
-    console.error('Error creating contact:', error);
+    console.error('Error upserting contact:', error);
+    // Upsert should prevent P2002, but handle just in case
+    if (error.code === 'P2002') {
+       return NextResponse.json(
+        { error: 'Unique constraint violation during upsert.' },
+        { status: 409 } // Conflict
+      );
+    }
     return NextResponse.json(
-      { error: 'Failed to create contact' },
+      { error: 'Failed to upsert contact' },
       { status: 500 }
     );
   }
